@@ -2,21 +2,29 @@
 <html>
 <head>
   <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-  <title>Simple Fable App</title>
+  <title>The Cube</title>
 </head>
 <body>
   <div id="container">
-    <button id="btn-up">UP</button>
-    <button id="btn-down">DOWN</button>
-    <button id="btn-left">LEFT</button>
-    <button id="btn-right">RIGHT</button>
+    <button class="btn" id="btn-up">UP</button>
+    <button class="btn" id="btn-down">DOWN</button>
+    <button class="btn" id="btn-left">LEFT</button>
+    <button class="btn" id="btn-right">RIGHT</button>
 
     <div id="cube-container">
       <div id="cube">
-        <div class="side" id="main">MAIN</div>
-        <div class="side" id="left">LEFT</div>
-        <div class="side" id="top">TOP</div>
-        <div class="side" id="right">RIGHT</div>
+        <div class="side" id="main">
+          <video height="600px" width="600px" loop src="http://www.sample-videos.com/video/mp4/240/big_buck_bunny_240p_1mb.mp4" />
+        </div>
+        <div class="side" id="left">
+          <video height="600px" width="600px" loop muted src="http://www.sample-videos.com/video/mp4/240/big_buck_bunny_240p_1mb.mp4" />
+        </div>
+        <div class="side" id="top">
+          <video height="600px" width="600px" loop muted src="http://www.sample-videos.com/video/mp4/240/big_buck_bunny_240p_1mb.mp4" />
+        </div>
+        <div class="side" id="right">
+          <video height="600px" width="600px" loop muted src="http://www.sample-videos.com/video/mp4/240/big_buck_bunny_240p_1mb.mp4" />
+        </div>
       </div>
     </div>
   </div>

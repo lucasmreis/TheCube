@@ -70,4 +70,23 @@ let init () =
     left.addEventListener_click(fun _ -> showing <- update cube showing ToLeft; null)
     right.addEventListener_click(fun _ -> showing <- update cube showing ToRight; null)
 
-init () |> ignore
+let loaded count (videos: Browser.NodeListOf<Browser.HTMLVideoElement>) =
+    Browser.console.log (sprintf "Loaded: %A" (count + 1))
+    if (count >= 3) then
+        [0..3]
+            |> List.map (fun id -> (videos.Item id).play())
+            |> ignore
+        Browser.console.log "Ready!"
+        init ()
+        4
+    else
+        count + 1
+
+let load () =
+    let mutable count = 0
+    let videos = Browser.document.getElementsByTagName_video ()
+    [0..3]
+        |> List.map (fun id -> (videos.Item id).addEventListener_canplaythrough (fun _ -> count <- loaded count videos; null))
+        |> ignore
+
+load ()
