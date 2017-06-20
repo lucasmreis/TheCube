@@ -6,57 +6,45 @@ open Fable.Import
 
 importSideEffects "./styles.css"
 
-type Sides = Front | Left | Main | Right
 type TopOrBottom = Top | Bottom
 
 type ShowingSide =
-    | Side of Sides
     | TopOrBottom of TopOrBottom
+    | Side of turns: int
 
 type TurnTo = ToRight | ToLeft | ToTop | ToBottom
 
 let turn showing turnTo =
     match showing, turnTo with
-    | TopOrBottom _, ToRight -> Side Right
-    | TopOrBottom _, ToLeft -> Side Left
-
-    | TopOrBottom Top, ToTop -> Side Main
-    | TopOrBottom Top, ToBottom -> Side Front
-    | TopOrBottom Bottom, ToTop -> Side Front
-    | TopOrBottom Bottom, ToBottom -> Side Main
-
+    | TopOrBottom _, ToRight -> Side -1
+    | TopOrBottom _, ToLeft -> Side 1
+    | TopOrBottom Top, ToTop -> Side 2
+    | TopOrBottom Top, ToBottom -> Side 0
+    | TopOrBottom Bottom, ToTop -> Side 0
+    | TopOrBottom Bottom, ToBottom -> Side 2
     | Side _, ToTop -> TopOrBottom Top
     | Side _, ToBottom -> TopOrBottom Bottom
-
-    | Side Front, ToRight -> Side Right
-    | Side Front, ToLeft -> Side Left
-
-    | Side Right, ToRight -> Side Main
-    | Side Right, ToLeft -> Side Front
-
-    | Side Main, ToRight -> Side Left
-    | Side Main, ToLeft -> Side Right
-
-    | Side Left, ToRight -> Side Front
-    | Side Left, ToLeft -> Side Main
+    | Side t, ToRight -> Side (t - 1)
+    | Side t, ToLeft -> Side (t + 1)
 
 let show position =
     match position with
-    | Side Front -> "rotateX(0deg) rotateY(0deg)"
-    | Side Left -> "rotateX(0deg) rotateY(90deg)"
-    | Side Right -> "rotateX(0deg) rotateY(-90deg)"
-    | Side Main -> "rotateX(0deg) rotateY(180deg)"
     | TopOrBottom Top -> "rotateX(-90deg) rotateY(0deg)"
     | TopOrBottom Bottom -> "rotateX(90deg) rotateY(0deg)"
+    | Side t ->
+        let degrees = t * 90
+        "rotateX(0deg) rotateY(" + degrees.ToString() + "deg)"
 
 let update (cube: Browser.HTMLElement) showing turnTo =
     let next = turn showing turnTo
     cube.style.transform <- show next
     Browser.console.log (sprintf "Showing: %A" next)
+    Browser.console.log (sprintf "Style: %A" (show next))
+    Browser.console.log "---"
     next
 
 let init () =
-    let mutable showing = Side Front
+    let mutable showing = Side 0
 
     let cube = Browser.document.getElementById "cube"
 
@@ -89,4 +77,10 @@ let load () =
         |> List.map (fun id -> (videos.Item id).addEventListener_canplaythrough (fun _ -> count <- loaded count videos; null))
         |> ignore
 
-load ()
+let listenToLoad (f: Browser.EventListenerOrEventListenerObject) =
+    let videos = Browser.document.getElementsByTagName "video"
+    [0..3] |> List.map (fun id -> (videos.Item id).addEventListener("canplaythrough", f, false))
+
+// load ()
+// init ()
+
